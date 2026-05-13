@@ -1,12 +1,13 @@
 import { Link, Outlet } from "react-router-dom";
 import hyfLogo from "../../assets/hyf.svg";
 import { useAuth } from "../../context/AuthContext.jsx";
+import styles from "./Layout.module.css";
 
 export default function Layout() {
   const { user, logout } = useAuth();
 
   return (
-    <div>
+    <div className={styles.shell}>
       <header>
         <nav
           style={{
@@ -16,6 +17,7 @@ export default function Layout() {
             justifyContent: "center",
             alignItems: "center",
             padding: "10px 20px",
+            flexWrap: "wrap",
           }}
         >
           <a
@@ -35,6 +37,9 @@ export default function Layout() {
           <Link to="/events" className="link">
             Events
           </Link>
+          <Link to="/events/detail" className="link">
+            Sample event
+          </Link>
 
           {user && (
             <>
@@ -48,11 +53,17 @@ export default function Layout() {
         </nav>
       </header>
 
-      <main>
+      <main className={styles.main}>
         <Outlet />
       </main>
 
-      <footer>{/* Footer content goes here */}</footer>
+      {/* Footer content goes here */}
+      <footer className={styles.footer}>
+        <p style={{ margin: 0 }}>
+          Event app layout — header, main, and footer ready for cart, auth, and
+          more navigation later.
+        </p>
+      </footer>
     </div>
   );
 }
