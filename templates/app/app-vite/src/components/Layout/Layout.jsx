@@ -37,10 +37,6 @@ export default function Layout() {
           <Link to="/events" className="link">
             Events
           </Link>
-          <Link to="/events/detail" className="link">
-            Sample event
-          </Link>
-
           {user && (
             <>
               <span>{user.email}</span>

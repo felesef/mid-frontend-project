@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "./components/Layout/Layout.jsx";
 import HomePage from "./components/HomePage/HomePage.jsx";
-import EventList from "./components/EventList/EventList.jsx";
+import EventsPage from "./components/EventsPage/EventsPage.jsx";
 import EventDetail from "./components/EventDetail/EventDetail.jsx";
 import Login from "./components/Login/Login.jsx";
 import Register from "./components/Register/Register.jsx";
@@ -19,8 +19,8 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       { index: true, element: <HomePage /> },
-      { path: "events", element: <EventList /> },
-      { path: "events/detail", element: <EventDetail /> },
+      { path: "events", element: <EventsPage /> },
+      { path: "events/:id", element: <EventDetail /> },
     ],
   },
   { path: "/login", element: <Login /> },
