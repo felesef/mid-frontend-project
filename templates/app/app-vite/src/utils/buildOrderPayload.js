@@ -1,4 +1,4 @@
-export function buildOrderPayload(cartItems) {
+export function buildOrderPayload(cartItems, userId) {
   const items = cartItems.map(({ eventId, name, price, quantity }) => ({
     eventId,
     name,
@@ -12,6 +12,7 @@ export function buildOrderPayload(cartItems) {
   );
 
   return {
+    userId,
     items,
     total,
     status: "confirmed",

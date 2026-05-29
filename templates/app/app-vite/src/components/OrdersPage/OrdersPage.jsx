@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import api from "../../api.js";
 import { useAuth } from "../../context/AuthContext.jsx";
+import { formatPrice } from "../../utils/formatPrice.js";
 import styles from "./OrdersPage.module.css";
 
 export default function OrdersPage() {
@@ -74,7 +75,8 @@ export default function OrdersPage() {
 
       {!loading && !error && orders.length === 0 && (
         <p className={styles.empty} role="status">
-          You have no orders yet. Checkout will be available in Week 5.
+          You have no orders yet.{" "}
+          <Link to="/events">Browse events</Link> and checkout when ready.
         </p>
       )}
 
@@ -82,9 +84,12 @@ export default function OrdersPage() {
         <ul className={styles.list}>
           {orders.map((order) => (
             <li key={order.id} className={styles.item}>
-              <h2 className={styles.itemTitle}>Order #{order.id}</h2>
+              <h2 className={styles.itemTitle}>
+                <Link to={`/orders/${order.id}`}>Order #{order.id}</Link>
+              </h2>
               <p className={styles.itemMeta}>
                 Status: {order.status ?? "pending"}
+                {order.total != null && ` · ${formatPrice(order.total)}`}
               </p>
             </li>
           ))}
