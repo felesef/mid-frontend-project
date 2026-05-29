@@ -1,0 +1,39 @@
+.shell {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav {
+  width: 100%;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
+  flex-wrap: wrap;
+}
+
+.navBtn {
+  font-size: 1rem;
+  color: inherit;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.main {
+  flex: 1;
+  width: 100%;
+}
+
+.footer {
+  margin-top: auto;
+  padding: 1rem 1.25rem 1.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #57606a;
+  border-top: 1px solid #d8dee4;
+  background: #f6f8fa;
+}

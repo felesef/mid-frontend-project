@@ -1,5 +1,11 @@
 {
-  "users": [],
+  "users": [
+    {
+      "email": "dadasefe@gmail.com",
+      "password": "$2a$10$srrcMabzKYEHvfj2vcU4f.Q5M.SkPtwyd5iXO7tayP1ZeY5Exj8ye",
+      "id": 1
+    }
+  ],
   "events": [
     {
       "id": 1,
