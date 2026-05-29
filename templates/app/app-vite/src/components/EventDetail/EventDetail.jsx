@@ -1,23 +1,104 @@
-// TODO: display at least date, time, venue, city, and description for one event
-// TODO: use useParams() to get the event id from the URL
-// TODO: fetch the event from GET /events/:id instead of using mock data
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import events from "../../data/events.js";
+import api from "../../api.js";
+import { useCart } from "../../context/CartContext.jsx";
+import { formatPrice } from "../../utils/formatPrice.js";
 import styles from "./EventDetail.module.css";
-
-function formatPrice(price) {
-  return price === 0 ? "Free" : `€${price}`;
-}
 
 export default function EventDetail() {
   const { id } = useParams();
-  const event = events.find((e) => String(e.id) === id);
+  const { addItem } = useCart();
+  const [event, setEvent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [notFound, setNotFound] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
   const [quantity, setQuantity] = useState(1);
   const [descriptionExpanded, setDescriptionExpanded] = useState(false);
+  const [cartMessage, setCartMessage] = useState("");
 
-  if (!event) {
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadEvent() {
+      setLoading(true);
+      setError(null);
+      setNotFound(false);
+      setEvent(null);
+
+      try {
+        const response = await fetch(api(`/events/${id}`));
+
+        if (response.status === 404) {
+          if (!cancelled) setNotFound(true);
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error(`Could not load event (${response.status})`);
+        }
+
+        const data = await response.json();
+        if (!cancelled) {
+          setEvent(data);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError(
+            err instanceof Error ? err.message : "Could not load event",
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadEvent();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [id, retryCount]);
+
+  useEffect(() => {
+    setQuantity(1);
+    setDescriptionExpanded(false);
+  }, [event?.id]);
+
+  if (loading) {
+    return (
+      <div className={styles.page}>
+        <p className={styles.status} role="status">
+          Loading event…
+        </p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.errorBox} role="alert">
+          <p className={styles.errorText}>{error}</p>
+          <button
+            type="button"
+            className={styles.retryBtn}
+            onClick={() => setRetryCount((n) => n + 1)}
+          >
+            Try again
+          </button>
+        </div>
+        <p className={styles.back}>
+          <Link to="/events">← All events</Link>
+        </p>
+      </div>
+    );
+  }
+
+  if (notFound || !event) {
     return (
       <div className={styles.page}>
         <p className={styles.notFound} role="status">
@@ -38,6 +119,13 @@ export default function EventDetail() {
 
   function increaseQuantity() {
     setQuantity((q) => Math.min(maxQuantity, q + 1));
+  }
+
+  function handleAddToCart() {
+    addItem(event, quantity);
+    setCartMessage(
+      `Added ${quantity} ticket${quantity === 1 ? "" : "s"} to your cart.`,
+    );
   }
 
   return (
@@ -139,6 +227,19 @@ export default function EventDetail() {
               ? "Total: Free"
               : `Total: €${lineTotal} (${quantity} × ${formatPrice(event.price)})`}
           </p>
+          <button
+            type="button"
+            className={styles.addBtn}
+            onClick={handleAddToCart}
+          >
+            Add to cart
+          </button>
+          {cartMessage && (
+            <p className={styles.cartMessage} role="status">
+              {cartMessage}{" "}
+              <Link to="/cart">View cart</Link>
+            </p>
+          )}
         </section>
       )}
     </div>
