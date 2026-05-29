@@ -1,14 +1,38 @@
+import { Link } from "react-router-dom";
+import { formatPrice } from "../../utils/formatPrice.js";
 import styles from "./EventCard.module.css";
 
-export default function EventCard() {
+function formatAvailability(ticketsAvailable) {
+  return ticketsAvailable === 0
+    ? "Sold out"
+    : `${ticketsAvailable} tickets left`;
+}
+
+export default function EventCard({ event }) {
+  const soldOut = event.ticketsAvailable === 0;
+
   return (
     <article className={styles.card}>
-      <h2 className={styles.title}>React Copenhagen Conference 2026</h2>
-      <p className={styles.meta}>2026-04-15 at 09:00</p>
-      <p className={styles.meta}>Copenhagen Concert Hall, Copenhagen</p>
-      <p className={styles.meta}>€149</p>
-      <p className={styles.meta}>Sold out</p>
-      <span className={styles.badge}>Conference</span>
+      <h2 className={styles.title}>
+        <Link to={`/events/${event.id}`} className={styles.titleLink}>
+          {event.name}
+        </Link>
+      </h2>
+      <p className={styles.meta}>
+        {event.date} at {event.time}
+      </p>
+      <p className={styles.meta}>
+        {event.venue}, {event.city}
+      </p>
+      <p className={styles.meta}>{formatPrice(event.price)}</p>
+      <p
+        className={
+          soldOut ? `${styles.meta} ${styles.soldOut}` : styles.meta
+        }
+      >
+        {formatAvailability(event.ticketsAvailable)}
+      </p>
+      <span className={styles.badge}>{event.category}</span>
     </article>
   );
 }

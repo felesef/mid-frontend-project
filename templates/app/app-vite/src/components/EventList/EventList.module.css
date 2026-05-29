@@ -1,0 +1,21 @@
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+.item {
+  margin: 0;
+}
+
+.empty {
+  margin: 0;
+  padding: 2rem 1.25rem;
+  text-align: center;
+  color: #57606a;
+  border: 1px dashed #d0d7de;
+  border-radius: 0.5rem;
+  background: #f6f8fa;
+}

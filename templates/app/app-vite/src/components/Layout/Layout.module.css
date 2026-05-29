@@ -4,6 +4,25 @@
   flex-direction: column;
 }
 
+.nav {
+  width: 100%;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
+  flex-wrap: wrap;
+}
+
+.navBtn {
+  font-size: 1rem;
+  color: inherit;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 .main {
   flex: 1;
   width: 100%;

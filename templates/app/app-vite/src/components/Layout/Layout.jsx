@@ -1,29 +1,22 @@
 import { Link, Outlet } from "react-router-dom";
 import hyfLogo from "../../assets/hyf.svg";
 import { useAuth } from "../../context/AuthContext.jsx";
+import { useCart } from "../../context/CartContext.jsx";
 import styles from "./Layout.module.css";
 
 export default function Layout() {
   const { user, logout } = useAuth();
+  const { totalItems } = useCart();
 
   return (
     <div className={styles.shell}>
       <header>
-        <nav
-          style={{
-            width: "100%",
-            display: "flex",
-            gap: "20px",
-            justifyContent: "center",
-            alignItems: "center",
-            padding: "10px 20px",
-            flexWrap: "wrap",
-          }}
-        >
+        <nav className={styles.nav}>
           <a
             href="https://www.hackyourfuture.dk/"
             target="_blank"
             className="link"
+            rel="noreferrer"
           >
             <img
               src={hyfLogo}
@@ -33,23 +26,35 @@ export default function Layout() {
               style={{ padding: "20px" }}
             />
           </a>
-          {/* Navigation links go here — e.g. link to event list, cart, login */}
           <Link to="/events" className="link">
             Events
           </Link>
-          <Link to="/events/detail" className="link">
-            Sample event
+          <Link to="/cart" className="link">
+            Cart{totalItems > 0 ? ` (${totalItems})` : ""}
           </Link>
 
-          {user && (
+          {user ? (
             <>
-              <span>{user.email}</span>
-              <button onClick={logout}>Sign out</button>
+              <Link to="/account" className="link">
+                Account
+              </Link>
+              <Link to="/orders" className="link">
+                Orders
+              </Link>
+              <button type="button" onClick={logout} className={styles.navBtn}>
+                Sign out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="link">
+                Login
+              </Link>
+              <Link to="/register" className="link">
+                Register
+              </Link>
             </>
           )}
-
-          <Link to="/login">Login</Link>
-          <Link to="/register">Register</Link>
         </nav>
       </header>
 
@@ -57,12 +62,8 @@ export default function Layout() {
         <Outlet />
       </main>
 
-      {/* Footer content goes here */}
       <footer className={styles.footer}>
-        <p style={{ margin: 0 }}>
-          Event app layout — header, main, and footer ready for cart, auth, and
-          more navigation later.
-        </p>
+        <p style={{ margin: 0 }}>HackYourFuture events app</p>
       </footer>
     </div>
   );
