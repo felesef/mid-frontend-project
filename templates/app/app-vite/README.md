@@ -9,6 +9,27 @@ You can visit [http://localhost:5173](http://localhost:5173) to see the app runn
 To prepare your application for deployment you can run `npm run build`.  
 To preview your web app you can use `npx vite preview --port 3000`.
 
+## Deploy on Vercel
+
+The frontend is a static Vite SPA. [`vercel.json`](vercel.json) rewrites all routes to `index.html` for React Router.
+
+1. Push the repo to GitHub and import the project in [Vercel](https://vercel.com).
+2. Set **Root Directory** to `templates/app/app-vite`.
+3. **Build command:** `npm run build`  
+   **Output directory:** `dist`
+4. Add environment variable **`VITE_API_URL`** — base URL of your API **without** `/api` (e.g. `https://your-api.onrender.com`). The `api()` helper appends `/api` to routes.
+5. Deploy. Note your live URL (e.g. `https://your-app.vercel.app`) in your portfolio or assignment.
+
+The mock API (`npm run api`) runs locally only. For production, host the mock API on a public URL (e.g. Render) or use the real backend in `api/README.md`.
+
+### Live app
+
+| | URL |
+|---|---|
+| **Production (Vercel)** | _Add your Vercel URL after deploy_ |
+| **Local frontend** | http://localhost:5173 |
+| **Local API** | http://localhost:3001 |
+
 ## Environment variables
 
 You can set environment variables in the `.env` file or in the Render.com environment variables section.
