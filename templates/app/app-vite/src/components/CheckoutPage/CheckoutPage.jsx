@@ -1,12 +1,18 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import api from "../../api.js";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { useCart } from "../../context/CartContext.jsx";
+import { buildOrderPayload } from "../../utils/buildOrderPayload.js";
 import { formatPrice } from "../../utils/formatPrice.js";
 import styles from "./CheckoutPage.module.css";
 
 export default function CheckoutPage() {
-  const { user } = useAuth();
-  const { items, totalPrice } = useCart();
+  const { user, token } = useAuth();
+  const { items, totalPrice, clearCart } = useCart();
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
+  const [placedOrderId, setPlacedOrderId] = useState(null);
 
   if (!user) {
     return (
@@ -27,6 +33,25 @@ export default function CheckoutPage() {
     );
   }
 
+  if (placedOrderId) {
+    return (
+      <div className={styles.page}>
+        <h1 className={styles.heading}>Checkout</h1>
+        <p className={`${styles.message} ${styles.success}`} role="status">
+          Order #{placedOrderId} placed successfully. Your cart has been
+          cleared.
+        </p>
+        <p>
+          <Link to={`/orders/${placedOrderId}`}>View order</Link>
+          {" · "}
+          <Link to="/orders">All orders</Link>
+          {" · "}
+          <Link to="/events">Browse events</Link>
+        </p>
+      </div>
+    );
+  }
+
   if (items.length === 0) {
     return (
       <div className={styles.page}>
@@ -39,18 +64,78 @@ export default function CheckoutPage() {
     );
   }
 
+  async function handlePlaceOrder() {
+    setSubmitting(true);
+    setError(null);
+
+    try {
+      const response = await fetch(api("/orders"), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(buildOrderPayload(items, user.id)),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Could not place order (${response.status})`);
+      }
+
+      const order = await response.json();
+      clearCart();
+      setPlacedOrderId(order.id);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Could not place order",
+      );
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   return (
     <div className={styles.page}>
       <h1 className={styles.heading}>Checkout</h1>
+
       <p className={`${styles.message} ${styles.info}`}>
-        Signed in as <strong>{user.email}</strong>. Cart total:{" "}
-        {formatPrice(totalPrice)} ({items.length} event
-        {items.length === 1 ? "" : "s"}).
+        Signed in as <strong>{user.email}</strong>.
       </p>
-      <p className={`${styles.message} ${styles.info}`}>
-        Placing orders is coming in Week 5. For now, review your cart on the{" "}
-        <Link to="/cart">cart page</Link>.
-      </p>
+
+      <section className={styles.summary} aria-label="Order summary">
+        <h2 className={styles.summaryHeading}>Order summary</h2>
+        <ul className={styles.itemList}>
+          {items.map((item) => (
+            <li key={item.eventId} className={styles.summaryItem}>
+              <span>
+                {item.name} × {item.quantity}
+              </span>
+              <span>{formatPrice(item.price * item.quantity)}</span>
+            </li>
+          ))}
+        </ul>
+        <p className={styles.total}>Total: {formatPrice(totalPrice)}</p>
+      </section>
+
+      {error && (
+        <p className={`${styles.message} ${styles.error}`} role="alert">
+          {error}
+        </p>
+      )}
+
+      <div className={styles.actions}>
+        <button
+          type="button"
+          className={styles.primaryBtn}
+          disabled={submitting}
+          onClick={handlePlaceOrder}
+        >
+          {submitting ? "Placing order…" : "Place order"}
+        </button>
+        <Link to="/cart" className={styles.secondaryLink}>
+          Back to cart
+        </Link>
+      </div>
     </div>
   );
 }

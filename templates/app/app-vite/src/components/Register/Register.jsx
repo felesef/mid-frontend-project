@@ -1,7 +1,3 @@
-// TODO: build a register form with relevant fields
-// TODO: call register(email, password) from useAuth() on submit
-// TODO: show a clear error message if registration fails
-// TODO: redirect to the event list on success
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
