@@ -36,10 +36,11 @@ app.use(middlewares);
 app.use(auth);
 app.use(router);
 
-const PORT = process.env.API_PORT || 3001;
+const PORT = process.env.PORT || process.env.API_PORT || 3001;
+const HOST = "0.0.0.0";
 
-app.listen(PORT, () => {
-  console.log(`Mock API running at http://localhost:${PORT}`);
+app.listen(PORT, HOST, () => {
+  console.log(`Mock API running on ${HOST}:${PORT}`);
   console.log("");
   console.log("Auth (public):");
   console.log("  POST /register  { email, password }");

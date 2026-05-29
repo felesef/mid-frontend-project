@@ -1,8 +1,8 @@
 {
   "users": [
     {
-      "email": "dadasefe@gmail.com",
-      "password": "$2a$10$srrcMabzKYEHvfj2vcU4f.Q5M.SkPtwyd5iXO7tayP1ZeY5Exj8ye",
+      "email": "testmail@gmail.com",
+      "password": "$2a$10$srrcMabzKYEHvfj...........",
       "id": 1
     }
   ],
@@ -138,5 +138,26 @@
       "category": "Workshop"
     }
   ],
-  "orders": []
+  "orders": [
+    {
+      "userId": 1,
+      "items": [
+        {
+          "eventId": 2,
+          "name": "Hackathon: Build with AI",
+          "price": 0,
+          "quantity": 1
+        },
+        {
+          "eventId": 4,
+          "name": "TypeScript Deep Dive",
+          "price": 89,
+          "quantity": 1
+        }
+      ],
+      "total": 89,
+      "status": "confirmed",
+      "id": 1
+    }
+  ]
 }

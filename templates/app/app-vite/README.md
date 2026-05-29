@@ -9,24 +9,59 @@ You can visit [http://localhost:5173](http://localhost:5173) to see the app runn
 To prepare your application for deployment you can run `npm run build`.  
 To preview your web app you can use `npx vite preview --port 3000`.
 
-## Deploy on Vercel
+## Deploy: Render (API) + Vercel (frontend)
+
+You do **not** need `render.yaml`. Use the Render dashboard.
 
 The frontend is a static Vite SPA. [`vercel.json`](vercel.json) rewrites all routes to `index.html` for React Router.
 
-1. Push the repo to GitHub and import the project in [Vercel](https://vercel.com).
-2. Set **Root Directory** to `templates/app/app-vite`.
-3. **Build command:** `npm run build`  
-   **Output directory:** `dist`
-4. Add environment variable **`VITE_API_URL`** — base URL of your API **without** `/api` (e.g. `https://your-api.onrender.com`). The `api()` helper appends `/api` to routes.
-5. Deploy. Note your live URL (e.g. `https://your-app.vercel.app`) in your portfolio or assignment.
+### 1. Deploy the mock API on Render
 
-The mock API (`npm run api`) runs locally only. For production, host the mock API on a public URL (e.g. Render) or use the real backend in `api/README.md`.
+1. Push this repo to GitHub.
+2. [Render Dashboard](https://dashboard.render.com) → **New +** → **Web Service** → connect repo.
+3. Settings:
+
+| Field | Value |
+|-------|--------|
+| Root Directory | `templates/app/app-vite` |
+| Build Command | `npm install` |
+| Start Command | `npm run start:api` |
+| Instance type | Free (optional) |
+
+4. Deploy and copy the service URL, e.g. `https://hyf-events-api.onrender.com`.
+5. Test: `curl https://YOUR-URL.onrender.com/api/events` (JSON array).
+
+Free tier may sleep; first request can take ~30s.
+
+### 2. Connect Vercel
+
+1. Push the repo to GitHub and import the project in [Vercel](https://vercel.com).
+2. Settings:
+
+| Vercel setting | Value |
+|----------------|--------|
+| Root Directory | `templates/app/app-vite` |
+| Build Command | `npm run build` |
+| Output Directory | `dist` |
+
+**Environment variable (required):**
+
+| Name | Value |
+|------|--------|
+| `VITE_API_URL` | `https://YOUR-RENDER-URL.onrender.com` |
+
+Do **not** add `/api` to `VITE_API_URL` (the `api()` helper appends `/api`). Redeploy Vercel after changing env vars.
+
+### 3. Verify
+
+Open your Vercel site → `/events`. In DevTools → Network, requests should go to `https://….onrender.com/api/events`, not `localhost`.
 
 ### Live app
 
 | | URL |
 |---|---|
 | **Production (Vercel)** | _Add your Vercel URL after deploy_ |
+| **Production API (Render)** | _Add your Render URL after deploy_ |
 | **Local frontend** | http://localhost:5173 |
 | **Local API** | http://localhost:3001 |
 
@@ -201,7 +236,7 @@ Select the same repository as you used for the web service.
 
 ![](../images/render/app/step18.png)
 
-Fill in the required fields and add the "VITE_API_URL" environment variable with the value based on the URL your web service got (for example `https://hyf-template-api.onrender.com/api`). Then click "Create Static Site".
+Fill in the required fields and add the `VITE_API_URL` environment variable with your Render API base URL **without** `/api` (for example `https://hyf-events-api.onrender.com`). Then click "Create Static Site".
 
 ![](../images/render/app/step19.png)
 ![](../images/render/app/step20.png)
