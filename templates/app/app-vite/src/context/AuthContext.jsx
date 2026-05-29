@@ -29,10 +29,10 @@ export function AuthProvider({ children }) {
   }
 
   async function register(email, password) {
-    // TODO: POST to api("/register") with { email, password }
-    // TODO: if the response is not ok, throw an error
-    // TODO: destructure { accessToken, user } from the response JSON
-    // TODO: call `persist` with accessToken and user to save the session
+    // DONE: POST to api("/register") with { email, password }
+    // DONE: if the response is not ok, throw an error
+    // DONE: destructure { accessToken, user } from the response JSON
+    // DONE: call `persist` with accessToken and user to save the session
     const response = await fetch(api("/register"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -54,7 +54,7 @@ export function AuthProvider({ children }) {
   function logout() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    // TODO add the missing logout logic here — clear the token and user from state as well
+    // DONE add the missing logout logic here — clear the token and user from state as well
     setToken(null);
     setUser(null);
   }

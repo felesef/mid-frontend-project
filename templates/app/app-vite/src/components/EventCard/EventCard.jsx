@@ -1,9 +1,6 @@
 import { Link } from "react-router-dom";
+import { formatPrice } from "../../utils/formatPrice.js";
 import styles from "./EventCard.module.css";
-
-function formatPrice(price) {
-  return price === 0 ? "Free" : `€${price}`;
-}
 
 function formatAvailability(ticketsAvailable) {
   return ticketsAvailable === 0

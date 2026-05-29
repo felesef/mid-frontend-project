@@ -1,0 +1,33 @@
+.page {
+  max-width: 32rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 2.5rem;
+}
+
+.heading {
+  margin: 0 0 1rem;
+  font-size: 1.75rem;
+}
+
+.message {
+  margin: 0 0 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: 0.5rem;
+  line-height: 1.5;
+}
+
+.info {
+  color: #24292f;
+  background: #ddf4ff;
+  border: 1px solid #54aeff;
+}
+
+.warning {
+  color: #24292f;
+  background: #fff8c5;
+  border: 1px solid #d4a72c;
+}
+
+.link {
+  font-weight: 600;
+}

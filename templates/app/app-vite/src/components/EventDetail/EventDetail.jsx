@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import api from "../../api.js";
+import { useCart } from "../../context/CartContext.jsx";
+import { formatPrice } from "../../utils/formatPrice.js";
 import styles from "./EventDetail.module.css";
-
-function formatPrice(price) {
-  return price === 0 ? "Free" : `€${price}`;
-}
 
 export default function EventDetail() {
   const { id } = useParams();
+  const { addItem } = useCart();
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,6 +16,7 @@ export default function EventDetail() {
 
   const [quantity, setQuantity] = useState(1);
   const [descriptionExpanded, setDescriptionExpanded] = useState(false);
+  const [cartMessage, setCartMessage] = useState("");
 
   useEffect(() => {
     let cancelled = false;
@@ -121,6 +121,13 @@ export default function EventDetail() {
     setQuantity((q) => Math.min(maxQuantity, q + 1));
   }
 
+  function handleAddToCart() {
+    addItem(event, quantity);
+    setCartMessage(
+      `Added ${quantity} ticket${quantity === 1 ? "" : "s"} to your cart.`,
+    );
+  }
+
   return (
     <div className={styles.page}>
       <p className={styles.back}>
@@ -220,6 +227,19 @@ export default function EventDetail() {
               ? "Total: Free"
               : `Total: €${lineTotal} (${quantity} × ${formatPrice(event.price)})`}
           </p>
+          <button
+            type="button"
+            className={styles.addBtn}
+            onClick={handleAddToCart}
+          >
+            Add to cart
+          </button>
+          {cartMessage && (
+            <p className={styles.cartMessage} role="status">
+              {cartMessage}{" "}
+              <Link to="/cart">View cart</Link>
+            </p>
+          )}
         </section>
       )}
     </div>
